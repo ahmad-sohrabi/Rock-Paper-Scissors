@@ -15,7 +15,7 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 torch.manual_seed(42)
 torch.cuda.manual_seed(42)
 
-model = RPSModel4(num_channels=3).to(device)
+model = RPSModel4(num_channels=1).to(device)
 
 means, stds = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
 
@@ -27,19 +27,36 @@ train_transform = transform.Compose([
     transform.RandomRotation(20),
     transform.RandomHorizontalFlip(),
     transform.RandomVerticalFlip(),
-    # transform.CenterCrop((224, 224)),
 ])
 
 test_transform = transform.Compose([
     transform.ToTensor(),
-    transform.Normalize(means, stds)
+    transform.Normalize(means, stds),
+])
+
+train_transform_gray = transform.Compose([
+    transform.ToTensor(),
+    transform.Normalize(means, stds),
+    transform.RandomAffine(0, shear=0.2),  # random shear 0.2
+    transform.RandomAffine(0, scale=(0.8, 1.2)),  # random zoom 0.2
+    transform.RandomRotation(20),
+    transform.RandomHorizontalFlip(),
+    transform.RandomVerticalFlip(),
+    transform.Grayscale(),
+    # transform.CenterCrop((224, 224)),
+])
+
+test_transform_gray = transform.Compose([
+    transform.ToTensor(),
+    transform.Normalize(means, stds),
+    transform.Grayscale(),
     # transform.Resize((128, 128)),
     # transform.CenterCrop((128, 128)),
 ])
 
-train_set = datasets.ImageFolder(root='data/train', transform=train_transform)
-validation_set = datasets.ImageFolder(root='data/val', transform=test_transform)
-test_set = datasets.ImageFolder(root='data/test', transform=test_transform)
+train_set = datasets.ImageFolder(root='data/train', transform=train_transform_gray)
+validation_set = datasets.ImageFolder(root='data/val', transform=test_transform_gray)
+test_set = datasets.ImageFolder(root='data/test', transform=test_transform_gray)
 
 train_loader = DataLoader(train_set, batch_size=64, shuffle=True)
 validation_loader = DataLoader(validation_set, batch_size=64, shuffle=True)
