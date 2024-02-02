@@ -113,16 +113,10 @@ class RPSModel3(nn.Module):
             nn.MaxPool2d(2, 2),
             nn.Dropout(0.4),
 
-            nn.Conv2d(128, 256, kernel_size=5, padding=1),
-            nn.ReLU(),
-            nn.BatchNorm2d(256),
-            nn.MaxPool2d(2, 2),
-            nn.Dropout(0.4),
-
             nn.Flatten(),
             nn.Dropout(0.4),
 
-            nn.Linear(512, 512),
+            nn.Linear(3584, 512),
             nn.ReLU(),
             nn.Dropout(0.4),
 
@@ -167,10 +161,16 @@ class RPSModel4(nn.Module):
             nn.MaxPool2d(2, 2),
             nn.Dropout(0.4),
 
+            nn.Conv2d(128, 256, kernel_size=5, padding=1),
+            nn.ReLU(),
+            nn.BatchNorm2d(256),
+            nn.MaxPool2d(2, 2),
+            nn.Dropout(0.4),
+
             nn.Flatten(),
             nn.Dropout(0.4),
 
-            nn.Linear(3584, 512),
+            nn.Linear(512, 512),
             nn.ReLU(),
             nn.Dropout(0.4),
 
